@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://cm0yi2d074t64"]
+
+[ext_resource type="Script" uid="uid://dk1f7x00sdtru" path="res://scripts/dialogue_ui.gd" id="1_dwk8m"]
+
+[node name="DialogueUI" type="CanvasLayer" unique_id=931987783]
+script = ExtResource("1_dwk8m")
+
+[node name="Panel" type="Panel" parent="." unique_id=938175997]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -242.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+offset_transform_enabled = true
+offset_transform_visual_only = false
+
+[node name="NPCName" type="Label" parent="Panel" unique_id=1120368483]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 10.0
+offset_right = 85.0
+offset_bottom = 33.0
+theme_override_font_sizes/font_size = 28
+text = "NPC????"
+
+[node name="NPCTitle" type="Label" parent="Panel" unique_id=1380465356]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 40.0
+offset_right = 60.0
+offset_bottom = 63.0
+theme_override_colors/font_color = Color(0.45452422, 0.45452428, 0.45452422, 1)
+theme_override_font_sizes/font_size = 18
+text = "???"
+
+[node name="DialogueText" type="RichTextLabel" parent="Panel" unique_id=685936923]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 70.0
+offset_right = 1260.0
+offset_bottom = 170.0
+bbcode_enabled = true
+scroll_following = true
+scroll_following_visible_characters = true
+theme_override_font_sizes/font_size = 22
+
+[node name="PlayerInput" type="LineEdit" parent="Panel" unique_id=890663274]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 180.0
+offset_right = 1020.0
+offset_bottom = 220.0
+placeholder_text = "???????..."
+clear_button_enabled = true
+theme_override_font_sizes/font_size = 20
+
+[node name="SendButton" type="Button" parent="Panel" unique_id=1871413450]
+layout_mode = 0
+offset_left = 1030.0
+offset_top = 180.0
+offset_right = 1130.0
+offset_bottom = 220.0
+text = "????"
+theme_override_font_sizes/font_size = 20
+
+[node name="CloseButton" type="Button" parent="Panel" unique_id=2073287837]
+layout_mode = 0
+offset_left = 1140.0
+offset_top = 180.0
+offset_right = 1240.0
+offset_bottom = 220.0
+text = "???"
+theme_override_font_sizes/font_size = 20

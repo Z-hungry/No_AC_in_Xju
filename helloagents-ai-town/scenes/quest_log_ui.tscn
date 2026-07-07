@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://b5mwtq0xrkn3v"]
+
+[ext_resource type="Script" uid="uid://dn7q4wyk2xrb8" path="res://scripts/quest_log_ui.gd" id="1_qlog0"]
+
+[node name="QuestLogUI" type="CanvasLayer"]
+script = ExtResource("1_qlog0")
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 340.0
+offset_bottom = 220.0
+
+[node name="Title" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 200.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 20
+text = "任务日志 (J)"
+
+[node name="QuestList" type="VBoxContainer" parent="Panel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 42.0
+offset_right = 308.0
+offset_bottom = 190.0
