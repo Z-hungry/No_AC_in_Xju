@@ -25,7 +25,7 @@
 - **游戏引擎:** Godot 4.x
 - **后端框架:** FastAPI + Python 3.10+
 - **AI框架:** HelloAgents
-- **LLM:** OpenAI GPT-4 (可配置其余的LLM服务)
+- **LLM:** Agnes (可配置其余的LLM服务)
 
 ## 📦 快速开始
 

@@ -265,6 +265,7 @@ func _do_chat_stream_request(host: String, port: int, path: String, body: String
 func _poll_stream_response(stream_client: HTTPClient, npc_name: String):
 	var timeout = 120.0
 	var elapsed = 0.0
+	var full_response = ""
 
 	while elapsed < timeout:
 		var status = stream_client.get_status()
@@ -283,7 +284,6 @@ func _poll_stream_response(stream_client: HTTPClient, npc_name: String):
 				waiting_for_reply = false
 				return
 			
-			var full_response = ""
 			while stream_client.is_response_body_readable():
 				var chunk_bytes = stream_client.read_response_body_chunk()
 				if chunk_bytes.size() > 0:
@@ -310,11 +310,35 @@ func _poll_stream_response(stream_client: HTTPClient, npc_name: String):
 									stream_client.close()
 									waiting_for_reply = false
 									return
-			
-			await get_tree().create_timer(0.05).timeout
-			elapsed += 0.05
-			continue
 		
+		elif status == HTTPClient.STATUS_BODY:
+			while stream_client.is_response_body_readable():
+				var chunk_bytes = stream_client.read_response_body_chunk()
+				if chunk_bytes.size() > 0:
+					var chunk_str = chunk_bytes.get_string_from_utf8()
+					var lines = chunk_str.split("\n")
+					for line in lines:
+						if line.begins_with("data: "):
+							var json_str = line.substr(6)
+							var json = JSON.new()
+							if json.parse(json_str) == OK:
+								var data = json.data
+								if data.has("chunk") and data["chunk"]:
+									print("[DEBUG] 收到流式数据: ", data["chunk"])
+									chat_stream_chunk.emit(npc_name, data["chunk"])
+								if data.has("done") and data["done"]:
+									if data.has("error"):
+										chat_error.emit(data["error"])
+									else:
+										if data.has("message"):
+											full_response = data["message"]
+											var title = data.get("title", "")
+											chat_stream_done.emit(npc_name, full_response, title)
+										print("[DEBUG] 流式传输完成")
+									stream_client.close()
+									waiting_for_reply = false
+									return
+
 		elif status == HTTPClient.STATUS_ERROR:
 			print("[ERROR] 流式HTTP错误: ", stream_client.get_error())
 			chat_error.emit("HTTP错误: " + str(stream_client.get_error()))
@@ -329,8 +353,8 @@ func _poll_stream_response(stream_client: HTTPClient, npc_name: String):
 			waiting_for_reply = false
 			return
 		
-		await get_tree().create_timer(0.05).timeout
-		elapsed += 0.05
+		await get_tree().create_timer(0.01).timeout
+		elapsed += 0.01
 	
 	print("[ERROR] 流式请求超时")
 	stream_client.close()

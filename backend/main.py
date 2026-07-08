@@ -150,9 +150,6 @@ async def chat_with_npc_stream(request: ChatRequest):
     """
     from fastapi.responses import StreamingResponse
     import json
-    import asyncio
-    import threading
-    import queue
     
     npc_mgr, _ = get_managers()
     
@@ -164,30 +161,11 @@ async def chat_with_npc_stream(request: ChatRequest):
             detail=f"NPC '{request.npc_name}' 不存在"
         )
     
-    async def event_stream():
+    def event_stream():
         try:
             full_response = ""
-            sync_queue = queue.Queue()
-            current_loop = asyncio.get_event_loop()
-
-            def generate_chunks():
-                try:
-                    for chunk in npc_mgr.chat_stream(request.npc_name, request.message):
-                        sync_queue.put(chunk)
-                    sync_queue.put(None)
-                except Exception as e:
-                    sync_queue.put(f"ERROR:{str(e)}")
-
-            thread = threading.Thread(target=generate_chunks)
-            thread.start()
-
-            while True:
-                chunk = await current_loop.run_in_executor(None, sync_queue.get)
-                if chunk is None:
-                    break
-                if isinstance(chunk, str) and chunk.startswith("ERROR:"):
-                    yield f"data: {json.dumps({'chunk': '', 'done': True, 'error': chunk[6:]})}\n\n"
-                    return
+            
+            for chunk in npc_mgr.chat_stream(request.npc_name, request.message):
                 full_response += chunk
                 yield f"data: {json.dumps({'chunk': chunk, 'done': False, 'npc_name': request.npc_name})}\n\n"
 
